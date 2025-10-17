@@ -1,0 +1,93 @@
+# ==========================================
+# .gitignore — Przychodnia (ASP.NET + React/Vite)
+# ==========================================
+
+# --- System ---
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.user
+*.suo
+*.cache
+*.swp
+
+# --- IDE / Editor ---
+.vscode/
+.idea/
+*.userosscache
+*.sln.iml
+
+# --- Build outputs ---
+bin/
+obj/
+out/
+dist/
+publish/
+node_modules/
+
+# --- Package managers ---
+# npm / yarn / pnpm / bun
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnp.*
+.pnpm-debug.log
+
+# --- Environment files ---
+.env
+.env.*.local
+.env.local
+
+# --- ASP.NET specific ---
+appsettings.Development.json
+appsettings.Local.json
+*.db
+*.sqlite
+*.pdb
+*.mdb
+*.bak
+*.ldf
+*.mdf
+
+# --- Visual Studio ---
+.vs/
+*.dbmdl
+*.jfm
+*.sln.docstates
+*.userprefs
+
+# --- Coverage / Test results ---
+coverage/
+*.coverage
+*.coveragexml
+TestResults/
+*.trx
+
+# --- Logs / Temp ---
+logs/
+*.log
+*.tlog
+*.pid
+*.seed
+*.pid.lock
+
+# --- Frontend ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/.eslintcache
+
+# --- Backend ---
+Backend/bin/
+Backend/obj/
+Backend/.vs/
+Backend/.idea/
+Backend/Properties/launchSettings.json
+
+# --- OS specific ---
+ehthumbs.db
+Desktop.ini
