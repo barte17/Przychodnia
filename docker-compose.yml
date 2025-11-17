@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: przychodnia-postgres
+    environment:
+      POSTGRES_DB: PrzychodniaDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - przychodnia-network
+
+  mongodb:
+    image: mongo:7-jammy
+    container_name: przychodnia-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - przychodnia-network
+
+  # Opcjonalnie: pgAdmin do zarządzania PostgreSQL
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: przychodnia-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@przychodnia.pl
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    networks:
+      - przychodnia-network
+    depends_on:
+      - postgres
+
+  # Opcjonalnie: Mongo Express do zarządzania MongoDB
+  mongo-express:
+    image: mongo-express:latest
+    container_name: przychodnia-mongo-express
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
+    ports:
+      - "8081:8081"
+    networks:
+      - przychodnia-network
+    depends_on:
+      - mongodb
+
+volumes:
+  postgres-data:
+  mongodb-data:
+
+networks:
+  przychodnia-network:
+    driver: bridge
