@@ -25,6 +25,10 @@ public class Lekarz
     [Column("specjalizacja")]
     public string Specjalizacja { get; set; } = string.Empty;
 
-    // Navigation property
+    [Column("user_id")]
+    public string? UserId { get; set; }
+
+    // Navigation properties
+    public virtual User? User { get; set; }
     public virtual ICollection<Wizyta> Wizyty { get; set; } = new List<Wizyta>();
 }

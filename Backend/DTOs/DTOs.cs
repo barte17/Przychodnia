@@ -111,3 +111,43 @@ public class UpdateAnkietaDto
     public List<OdpowiedzAnkietyDto>? Odpowiedzi { get; set; }
     public string? DodatkoweUwagi { get; set; }
 }
+
+// Authentication DTOs
+public class RegisterDto
+{
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Role { get; set; } = "Patient"; // Patient, Doctor, Admin
+    public string? PESEL { get; set; } // Required for patients
+    public string? Specjalizacja { get; set; } // Required for doctors
+}
+
+public class LoginDto
+{
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+}
+
+public class AuthResponseDto
+{
+    public string Token { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
+    public DateTime Expires { get; set; }
+}
+
+public class UserInfoDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public PacjentDto? Pacjent { get; set; }
+    public LekarzDto? Lekarz { get; set; }
+}

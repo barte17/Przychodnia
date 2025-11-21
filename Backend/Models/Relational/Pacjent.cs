@@ -25,6 +25,10 @@ public class Pacjent
     [Column("pesel")]
     public string PESEL { get; set; } = string.Empty;
 
-    // Navigation property
+    [Column("user_id")]
+    public string? UserId { get; set; }
+
+    // Navigation properties
+    public virtual User? User { get; set; }
     public virtual ICollection<Wizyta> Wizyty { get; set; } = new List<Wizyta>();
 }
