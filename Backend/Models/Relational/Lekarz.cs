@@ -31,4 +31,5 @@ public class Lekarz
     // Navigation properties
     public virtual User? User { get; set; }
     public virtual ICollection<Wizyta> Wizyty { get; set; } = new List<Wizyta>();
+    public virtual ICollection<TerminLekarza> Terminy { get; set; } = new List<TerminLekarza>();
 }

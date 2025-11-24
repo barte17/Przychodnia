@@ -7,6 +7,10 @@ import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
 import UserManagement from './components/UserManagement';
+import MojeWizyty from './components/MojeWizyty';
+import RezerwacjaWizyty from './components/RezerwacjaWizyty';
+import PanelLekarza from './components/PanelLekarza';
+import ListaLekarzy from './components/ListaLekarzy';
 import './App.css'
 
 const AppRoutes: React.FC = () => {
@@ -49,6 +53,42 @@ const AppRoutes: React.FC = () => {
           <AdminRoute>
             <UserManagement />
           </AdminRoute>
+        }
+      />
+
+      {/* Trasy pacjenta */}
+      <Route
+        path="/moje-wizyty"
+        element={
+          <ProtectedRoute>
+            <MojeWizyty />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/rezerwacja"
+        element={
+          <ProtectedRoute>
+            <RezerwacjaWizyty />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/lekarze"
+        element={
+          <ProtectedRoute>
+            <ListaLekarzy />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Trasy lekarza */}
+      <Route
+        path="/panel-lekarza"
+        element={
+          <ProtectedRoute>
+            <PanelLekarza />
+          </ProtectedRoute>
         }
       />
       

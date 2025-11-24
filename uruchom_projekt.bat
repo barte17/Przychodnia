@@ -1,29 +1,45 @@
 @echo off
-echo Uruchamianie projektu Przychodnia...
+chcp 65001 >nul
+echo ╔══════════════════════════════════════════════════════════╗
+echo ║          PRZYCHODNIA - Uruchamianie projektu             ║
+echo ╚══════════════════════════════════════════════════════════╝
 echo.
 
-echo Uruchamianie Backend na porcie 5178...
-start "Backend" cmd /k "cd /d Backend && dotnet run"
-
-echo Czekanie na uruchomienie backendu...
-timeout /t 5 /nobreak >nul
-
-echo Uruchamianie Frontend na porcie 5173...
-start "Frontend" cmd /k "cd /d frontend && npm run dev"
+echo [1/2] Uruchamianie Backend (.NET Core)...
+echo       Port HTTP:  5178
+echo       Port HTTPS: 5179
+start "Backend - Przychodnia" cmd /k "cd /d Backend && dotnet run"
 
 echo.
-echo ===== PROJEKT URUCHOMIONY =====
-echo Backend: http://localhost:5178
-echo Frontend: http://localhost:5173
-echo Swagger: http://localhost:5178/swagger
+echo Czekanie na uruchomienie backendu (8 sekund)...
+timeout /t 8 /nobreak >nul
+
 echo.
-echo Konta testowe:
-echo   - pacjent1@przychodnia.pl / Haslo!23
-echo   - lekarz1@pans.pl / Haslo!23
-echo   - lekarz2@pans.pl / Haslo!23
-echo   - lekarz3@pans.pl / Haslo!23
-echo   - admin@pans.pl / Haslo!23
+echo [2/2] Uruchamianie Frontend (React + Vite)...
+echo       Port: 5173
+start "Frontend - Przychodnia" cmd /k "cd /d frontend && npm run dev"
+
 echo.
-echo Okna zostana zamkniete za 10 sekund...
-timeout /t 10 /nobreak >nul
-exit
+echo ╔══════════════════════════════════════════════════════════╗
+echo ║              PROJEKT URUCHOMIONY POMYSLNIE               ║
+echo ╚══════════════════════════════════════════════════════════╝
+echo.
+echo  ADRESY:
+echo  ─────────────────────────────────────────────────────────
+echo  Frontend:     http://localhost:5173
+echo  Backend API:  http://localhost:5178
+echo  Swagger:      http://localhost:5178/swagger
+echo.
+echo  KONTA TESTOWE (haslo: Haslo!23):
+echo  ─────────────────────────────────────────────────────────
+echo  Lekarze:      lek@pans.pl, lek2@pans.pl
+echo  Pacjenci:     pac@pans.pl, pac2@pans.pl
+echo.
+echo  BAZY DANYCH:
+echo  ─────────────────────────────────────────────────────────
+echo  PostgreSQL:   Aiven (relacyjna - uzytkownicy, wizyty)
+echo  MongoDB:      Atlas (nierelacyjna - ankiety)
+echo.
+echo  Aby zatrzymac projekt, zamknij okna terminali.
+echo.
+pause

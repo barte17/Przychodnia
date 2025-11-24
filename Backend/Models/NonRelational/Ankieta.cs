@@ -13,18 +13,34 @@ public class Ankieta
     public int IdAnkiety { get; set; }
 
     [BsonElement("id_pacjenta")]
-    [BsonRequired]
-    public int IdPacjenta { get; set; }
+    public int? IdPacjenta { get; set; } // Opcjonalne dla anonimowych ankiet
+
+    [BsonElement("id_wizyty")]
+    public int? IdWizyty { get; set; }
+
+    [BsonElement("id_lekarza")]
+    public int? IdLekarza { get; set; }
+
+    [BsonElement("nazwa_lekarza")]
+    public string? NazwaLekarza { get; set; } // Przechowujemy dla historii
 
     [BsonElement("pesel")]
-    [BsonRequired]
-    public string PESEL { get; set; } = string.Empty;
+    public string? PESEL { get; set; } // Opcjonalne dla anonimowych ankiet
+
+    [BsonElement("czy_anonimowa")]
+    public bool CzyAnonimowa { get; set; } = true;
 
     [BsonElement("data_wypelnienia")]
     public DateTime DataWypelnienia { get; set; } = DateTime.UtcNow;
 
+    [BsonElement("data_wizyty")]
+    public DateTime? DataWizyty { get; set; }
+
     [BsonElement("typ_ankiety")]
-    public string TypAnkiety { get; set; } = "Ogólna";
+    public string TypAnkiety { get; set; } = "OcenaWizyty";
+
+    [BsonElement("ocena_wizyty")]
+    public int? OcenaWizyty { get; set; } // 1-5 gwiazdek
 
     [BsonElement("odpowiedzi")]
     public List<OdpowiedzAnkiety> Odpowiedzi { get; set; } = new();

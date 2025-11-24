@@ -79,10 +79,16 @@ public class AnkietaDto
 {
     public string? Id { get; set; }
     public int IdAnkiety { get; set; }
-    public int IdPacjenta { get; set; }
-    public string PESEL { get; set; } = string.Empty;
+    public int? IdPacjenta { get; set; }
+    public int? IdWizyty { get; set; }
+    public int? IdLekarza { get; set; }
+    public string? NazwaLekarza { get; set; }
+    public string? PESEL { get; set; }
+    public bool CzyAnonimowa { get; set; }
     public DateTime DataWypelnienia { get; set; }
+    public DateTime? DataWizyty { get; set; }
     public string TypAnkiety { get; set; } = string.Empty;
+    public int? OcenaWizyty { get; set; }
     public List<OdpowiedzAnkietyDto> Odpowiedzi { get; set; } = new();
     public string? DodatkoweUwagi { get; set; }
     public DateTime DataUtworzenia { get; set; }
@@ -98,8 +104,8 @@ public class OdpowiedzAnkietyDto
 
 public class CreateAnkietaDto
 {
-    public int IdPacjenta { get; set; }
-    public string PESEL { get; set; } = string.Empty;
+    public int? IdPacjenta { get; set; }
+    public string? PESEL { get; set; }
     public DateTime? DataWypelnienia { get; set; }
     public string TypAnkiety { get; set; } = "Ogólna";
     public List<OdpowiedzAnkietyDto>? Odpowiedzi { get; set; }
@@ -108,6 +114,15 @@ public class CreateAnkietaDto
 
 public class UpdateAnkietaDto
 {
+    public List<OdpowiedzAnkietyDto>? Odpowiedzi { get; set; }
+    public string? DodatkoweUwagi { get; set; }
+}
+
+// DTO dla anonimowej ankiety o wizycie
+public class CreateAnkietaAnonimowaDto
+{
+    public int IdWizyty { get; set; }
+    public int OcenaWizyty { get; set; } // 1-5
     public List<OdpowiedzAnkietyDto>? Odpowiedzi { get; set; }
     public string? DodatkoweUwagi { get; set; }
 }
@@ -192,4 +207,51 @@ public class UpdateUserByAdminDto
     public string? Role { get; set; }
     public string? PESEL { get; set; }
     public string? Specjalizacja { get; set; }
+}
+
+// TerminLekarza DTOs
+public class TerminLekarzaDto
+{
+    public int IdTerminu { get; set; }
+    public DateTime DataRozpoczecia { get; set; }
+    public DateTime DataZakonczenia { get; set; }
+    public bool CzyDostepny { get; set; }
+    public int IdLekarza { get; set; }
+    public string LekarzImie { get; set; } = string.Empty;
+    public string LekarzNazwisko { get; set; } = string.Empty;
+    public string LekarzSpecjalizacja { get; set; } = string.Empty;
+}
+
+public class CreateTerminDto
+{
+    public DateTime DataRozpoczecia { get; set; }
+    public DateTime DataZakonczenia { get; set; }
+    public int IdLekarza { get; set; }
+}
+
+public class CreateTerminyBatchDto
+{
+    public int IdLekarza { get; set; }
+    public DateTime DataOd { get; set; }
+    public DateTime DataDo { get; set; }
+    public int CzasTrwaniaMinuty { get; set; } = 30; // domyślnie 30 minut
+}
+
+// Rezerwacja wizyty przez pacjenta
+public class RezerwujWizyteDto
+{
+    public int IdTerminu { get; set; }
+    public int IdPacjenta { get; set; }
+}
+
+// Rozszerzone Ankieta DTOs
+public class CreateAnkietaOcenaWizytyDto
+{
+    public int IdPacjenta { get; set; }
+    public int IdWizyty { get; set; }
+    public int IdLekarza { get; set; }
+    public string PESEL { get; set; } = string.Empty;
+    public int OcenaWizyty { get; set; } // 1-5
+    public List<OdpowiedzAnkietyDto>? Odpowiedzi { get; set; }
+    public string? DodatkoweUwagi { get; set; }
 }

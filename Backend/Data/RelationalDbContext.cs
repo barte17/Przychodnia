@@ -14,6 +14,7 @@ public class RelationalDbContext : IdentityDbContext<User>
     public DbSet<Pacjent> Pacjenci { get; set; }
     public DbSet<Lekarz> Lekarze { get; set; }
     public DbSet<Wizyta> Wizyty { get; set; }
+    public DbSet<TerminLekarza> TerminyLekarzy { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,5 +66,18 @@ public class RelationalDbContext : IdentityDbContext<User>
 
         modelBuilder.Entity<Wizyta>()
             .HasIndex(w => w.Status);
+
+        // Konfiguracja relacji TerminLekarza - Lekarz
+        modelBuilder.Entity<TerminLekarza>()
+            .HasOne(t => t.Lekarz)
+            .WithMany(l => l.Terminy)
+            .HasForeignKey(t => t.IdLekarza)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TerminLekarza>()
+            .HasIndex(t => t.DataRozpoczecia);
+
+        modelBuilder.Entity<TerminLekarza>()
+            .HasIndex(t => t.CzyDostepny);
     }
 }

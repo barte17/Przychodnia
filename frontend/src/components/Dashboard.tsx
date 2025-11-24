@@ -1,8 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Dashboard: React.FC = () => {
   const { user, userDetails, logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
@@ -41,27 +43,21 @@ const Dashboard: React.FC = () => {
   const renderPatientSections = () => (
     <div className="dashboard-sections">
       <div className="section-card">
-        <h3>Moje wizyty</h3>
-        <p>Przeglądaj swoje zaplanowane i poprzednie wizyty</p>
-        <button className="section-btn">Zobacz wizyty</button>
+        <h3>📅 Moje wizyty</h3>
+        <p>Przeglądaj swoje zaplanowane i poprzednie wizyty oraz wypełnij ankiety</p>
+        <button className="section-btn" onClick={() => navigate('/moje-wizyty')}>Zobacz wizyty</button>
       </div>
 
       <div className="section-card">
-        <h3>Umów wizytę</h3>
+        <h3>➕ Umów wizytę</h3>
         <p>Zarezerwuj termin wizyty u wybranego lekarza</p>
-        <button className="section-btn">Umów wizytę</button>
+        <button className="section-btn" onClick={() => navigate('/rezerwacja')}>Umów wizytę</button>
       </div>
 
       <div className="section-card">
-        <h3>Lekarze</h3>
-        <p>Przeglądaj dostępnych lekarzy i ich specjalizacje</p>
-        <button className="section-btn">Zobacz lekarzy</button>
-      </div>
-
-      <div className="section-card">
-        <h3>Moje ankiety</h3>
-        <p>Podziel się z nami swoją opinią dotyczącą ostatnich wizyt</p>
-        <button className="section-btn">Wypełnij ankietę</button>
+        <h3>👨‍⚕️ Nasi lekarze</h3>
+        <p>Poznaj nasz zespół lekarzy i ich specjalizacje</p>
+        <button className="section-btn" onClick={() => navigate('/lekarze')}>Zobacz lekarzy</button>
       </div>
     </div>
   );
@@ -69,27 +65,27 @@ const Dashboard: React.FC = () => {
   const renderDoctorSections = () => (
     <div className="dashboard-sections">
       <div className="section-card">
-        <h3>Moje wizyty</h3>
-        <p>Przeglądaj wizyty przypisane do Ciebie</p>
-        <button className="section-btn">Zobacz wizyty</button>
+        <h3>Panel Lekarza</h3>
+        <p>Zarządzaj wizytami, terminami i pacjentami</p>
+        <button className="section-btn" onClick={() => navigate('/panel-lekarza')}>Otwórz panel</button>
       </div>
 
       <div className="section-card">
         <h3>Najbliższe wizyty</h3>
         <p>Zaakceptowane wizyty na najbliższe dni</p>
-        <button className="section-btn">Najbliższe terminy</button>
+        <button className="section-btn" onClick={() => navigate('/panel-lekarza')}>Najbliższe terminy</button>
       </div>
 
       <div className="section-card">
         <h3>Wizyty do zatwierdzenia</h3>
         <p>Wizyty wymagające akceptacji</p>
-        <button className="section-btn">Zatwierdź wizyty</button>
+        <button className="section-btn" onClick={() => navigate('/panel-lekarza')}>Zatwierdź wizyty</button>
       </div>
 
       <div className="section-card">
-        <h3>Pacjenci</h3>
-        <p>Lista Twoich pacjentów i ich historie</p>
-        <button className="section-btn">Moi pacjenci</button>
+        <h3>Zarządzanie terminami</h3>
+        <p>Dodaj dostępne terminy wizyt</p>
+        <button className="section-btn" onClick={() => navigate('/panel-lekarza')}>Moje terminy</button>
       </div>
     </div>
   );
@@ -157,8 +153,8 @@ const Dashboard: React.FC = () => {
             {userDetails?.pacjent && (
               <p><strong>PESEL:</strong> {userDetails.pacjent.pesel}</p>
             )}
-            {userDetails?.doktor && (
-              <p><strong>Specjalizacja:</strong> {userDetails.doktor.specjalizacja}</p>
+            {userDetails?.lekarz && (
+              <p><strong>Specjalizacja:</strong> {userDetails.lekarz.specjalizacja}</p>
             )}
           </div>
         </div>

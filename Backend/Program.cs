@@ -93,6 +93,20 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Initialize seed data
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        await SeedData.Initialize(services);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error seeding data: {ex.Message}");
+    }
+}
+
 // Initialize MongoDB indexes in background
 _ = Task.Run(async () =>
 {

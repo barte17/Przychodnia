@@ -1,0 +1,275 @@
+.moje-wizyty {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.moje-wizyty h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.loading, .error, .no-data {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.wizyty-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.wizyta-card {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  padding: 15px;
+  border-left: 4px solid #007bff;
+}
+
+.wizyta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-oczekujaca {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status-zaakceptowana {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status-odbyta {
+  background: #cce5ff;
+  color: #004085;
+}
+
+.status-odrzucona {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.status-anulowana {
+  background: #e2e3e5;
+  color: #383d41;
+}
+
+.data {
+  color: #666;
+  font-size: 14px;
+}
+
+.wizyta-body {
+  margin-bottom: 15px;
+}
+
+.wizyta-body p {
+  margin: 5px 0;
+  color: #333;
+}
+
+.wizyta-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-anuluj {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-anuluj:hover {
+  background: #c82333;
+}
+
+.btn-ankieta {
+  background: #ffc107;
+  color: #333;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.btn-ankieta:hover {
+  background: #e0a800;
+}
+
+.ankieta-done {
+  color: #28a745;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.ankieta-info {
+  background: #e8f5e9;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 15px;
+  color: #2e7d32;
+  font-size: 14px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.stars {
+  display: flex;
+  gap: 5px;
+}
+
+.star {
+  font-size: 32px;
+  cursor: pointer;
+  color: #ddd;
+  transition: color 0.2s;
+}
+
+.star.active {
+  color: #ffc107;
+}
+
+.star:hover {
+  color: #ffdb58;
+}
+
+textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.btn-cancel {
+  background: #6c757d;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-submit {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-submit:hover {
+  background: #0056b3;
+}
+
+.btn-submit:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Ankieta modal */
+.ankieta-modal {
+  max-width: 600px;
+}
+
+.ankieta-modal .wizyta-info {
+  background: #f8f9fa;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.ankieta-pytania {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.ankieta-pytania .form-group {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+}
+
+.ankieta-pytania .form-group label {
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.ankieta-pytania textarea {
+  min-height: 60px;
+}
