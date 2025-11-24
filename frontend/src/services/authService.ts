@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const API_BASE_URL = 'https://localhost:5178/api';
+import { API_BASE_URL } from '../konfiguracja/api';
 
 export interface RegisterData {
   email: string;

@@ -5,6 +5,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
+import UserManagement from './components/UserManagement';
 import './App.css'
 
 const AppRoutes: React.FC = () => {
@@ -37,6 +39,16 @@ const AppRoutes: React.FC = () => {
           <ProtectedRoute>
             <Dashboard />
           </ProtectedRoute>
+        }
+      />
+      
+      {/* Trasy administracyjne */}
+      <Route
+        path="/admin/users"
+        element={
+          <AdminRoute>
+            <UserManagement />
+          </AdminRoute>
         }
       />
       

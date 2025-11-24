@@ -151,3 +151,45 @@ public class UserInfoDto
     public PacjentDto? Pacjent { get; set; }
     public LekarzDto? Lekarz { get; set; }
 }
+
+// Admin User Management DTOs
+public class UserListItemDto
+{
+    public string Id { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+    public string? PESEL { get; set; } // For patients
+    public string? Specjalizacja { get; set; } // For doctors
+}
+
+public class UpdateUserRoleDto
+{
+    public string UserId { get; set; } = string.Empty;
+    public string NewRole { get; set; } = string.Empty;
+    public string? PESEL { get; set; } // Required when changing to Patient
+    public string? Specjalizacja { get; set; } // Required when changing to Doctor
+}
+
+public class CreateUserByAdminDto
+{
+    public string Email { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
+    public string FirstName { get; set; } = string.Empty;
+    public string LastName { get; set; } = string.Empty;
+    public string Role { get; set; } = "Patient";
+    public string? PESEL { get; set; }
+    public string? Specjalizacja { get; set; }
+}
+
+public class UpdateUserByAdminDto
+{
+    public string? Email { get; set; }
+    public string? FirstName { get; set; }
+    public string? LastName { get; set; }
+    public string? Role { get; set; }
+    public string? PESEL { get; set; }
+    public string? Specjalizacja { get; set; }
+}

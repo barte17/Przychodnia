@@ -113,11 +113,19 @@ public class AuthController : ControllerBase
     {
         var user = await _userManager.FindByEmailAsync(loginDto.Email);
         if (user == null)
+        {
+            Console.WriteLine($"Login failed: User not found for email: {loginDto.Email}");
             return BadRequest(new { message = "Nieprawidłowe dane logowania" });
+        }
 
+        Console.WriteLine($"User found: {user.Email}, EmailConfirmed: {user.EmailConfirmed}");
+        
         var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
         if (!result.Succeeded)
+        {
+            Console.WriteLine($"Login failed for {user.Email}: {result}");
             return BadRequest(new { message = "Nieprawidłowe dane logowania" });
+        }
 
         var token = _jwtService.GenerateToken(user);
 
