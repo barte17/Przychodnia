@@ -19,6 +19,7 @@ public class WizytaController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<WizytaDto>>> GetWizyty()
     {
         var wizyty = await _context.Wizyty
@@ -174,6 +175,7 @@ public class WizytaController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> UpdateWizyta(int id, UpdateWizytaDto updateDto)
     {
         var wizyta = await _context.Wizyty.FindAsync(id);
@@ -205,6 +207,7 @@ public class WizytaController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteWizyta(int id)
     {
         var wizyta = await _context.Wizyty.FindAsync(id);

@@ -44,7 +44,7 @@ const MojeWizyty: React.FC = () => {
       // Sprawdź które wizyty mają już ankietę
       const wizytaWithAnkieta = await Promise.all(
         data.map(async (wizyta) => {
-          if (wizyta.status === 'Zakonczona') {
+          if (wizyta.status === 'Odbyta') {
             const response = await ankietaService.czyWizytaOceniona(wizyta.idWizyty);
             return { ...wizyta, maAnkiete: response.czyOceniona };
           }
@@ -103,11 +103,22 @@ const MojeWizyty: React.FC = () => {
         dodatkoweUwagi: uwagi || undefined
       });
       
+      // Natychmiast aktualizuj stan lokalnie, żeby uniknąć wyświetlania przycisku
+      setWizyty(prevWizyty => 
+        prevWizyty.map(w => 
+          w.idWizyty === ankietaModal.idWizyty 
+            ? { ...w, maAnkiete: true }
+            : w
+        )
+      );
+      
       setAnkietaModal(null);
       setOdpowiedzi({});
       setUwagi('');
-      loadWizyty();
       alert('Dziękujemy za wypełnienie ankiety!');
+      
+      // Przeładuj dane w tle dla pewności
+      loadWizyty();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Nie udało się zapisać ankiety');
     } finally {

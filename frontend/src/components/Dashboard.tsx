@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
       <div className="section-card">
         <h3>Najbliższe wizyty</h3>
         <p>Zaakceptowane wizyty na najbliższe dni</p>
-        <button className="section-btn" onClick={() => navigate('/panel-lekarza')}>Najbliższe terminy</button>
+        <button className="section-btn" onClick={() => navigate('/panel-lekarza?tab=zaakceptowane')}>Najbliższe terminy</button>
       </div>
 
       <div className="section-card">
@@ -85,7 +85,7 @@ const Dashboard: React.FC = () => {
       <div className="section-card">
         <h3>Zarządzanie terminami</h3>
         <p>Dodaj dostępne terminy wizyt</p>
-        <button className="section-btn" onClick={() => navigate('/panel-lekarza')}>Moje terminy</button>
+        <button className="section-btn" onClick={() => navigate('/panel-lekarza?tab=terminy')}>Moje terminy</button>
       </div>
     </div>
   );
@@ -106,13 +106,13 @@ const Dashboard: React.FC = () => {
       <div className="section-card">
         <h3>Ankiety</h3>
         <p>Przeglądaj i zarządzaj ankietami pacjentów</p>
-        <button className="section-btn">Zarządzaj ankietami</button>
+        <button className="section-btn" onClick={() => navigate('/admin/ankiety')}>Zarządzaj ankietami</button>
       </div>
 
       <div className="section-card">
         <h3>Zarządzanie wizytami</h3>
         <p>Przeglądaj i zarządzaj wszystkimi wizytami</p>
-        <button className="section-btn">Wszystkie wizyty</button>
+        <button className="section-btn" onClick={() => navigate('/admin/wizyty')}>Wszystkie wizyty</button>
       </div>
     </div>
   );

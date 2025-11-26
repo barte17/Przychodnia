@@ -86,7 +86,6 @@ Backend/bin/
 Backend/obj/
 Backend/.vs/
 Backend/.idea/
-Backend/Properties/launchSettings.json
 
 # --- OS specific ---
 ehthumbs.db

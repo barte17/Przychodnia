@@ -11,6 +11,8 @@ import MojeWizyty from './components/MojeWizyty';
 import RezerwacjaWizyty from './components/RezerwacjaWizyty';
 import PanelLekarza from './components/PanelLekarza';
 import ListaLekarzy from './components/ListaLekarzy';
+import ZarzadzanieAnkietami from './components/ZarzadzanieAnkietami';
+import ZarzadzanieWizytami from './components/ZarzadzanieWizytami';
 import './App.css'
 
 const AppRoutes: React.FC = () => {
@@ -52,6 +54,22 @@ const AppRoutes: React.FC = () => {
         element={
           <AdminRoute>
             <UserManagement />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/ankiety"
+        element={
+          <AdminRoute>
+            <ZarzadzanieAnkietami />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/wizyty"
+        element={
+          <AdminRoute>
+            <ZarzadzanieWizytami />
           </AdminRoute>
         }
       />

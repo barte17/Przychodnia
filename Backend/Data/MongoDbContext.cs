@@ -37,5 +37,11 @@ public class MongoDbContext
             .Ascending(a => a.TypAnkiety);
         var typIndexModel = new CreateIndexModel<Ankieta>(typIndexKeys);
         await Ankiety.Indexes.CreateOneAsync(typIndexModel);
+
+        // Indeks na IdWizyty - dla szybkiego sprawdzania czy ankieta już istnieje
+        var wizytaIndexKeys = Builders<Ankieta>.IndexKeys
+            .Ascending(a => a.IdWizyty);
+        var wizytaIndexModel = new CreateIndexModel<Ankieta>(wizytaIndexKeys);
+        await Ankiety.Indexes.CreateOneAsync(wizytaIndexModel);
     }
 }

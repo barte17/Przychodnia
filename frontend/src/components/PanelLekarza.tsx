@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import wizytaService, { Wizyta } from '../services/wizytaService';
 import terminService, { TerminLekarza } from '../services/terminService';
 import './PanelLekarza.css';
@@ -8,11 +9,22 @@ type TabType = 'oczekujace' | 'zaakceptowane' | 'historia' | 'terminy';
 
 const PanelLekarza: React.FC = () => {
   const { userDetails } = useAuth();
-  const [activeTab, setActiveTab] = useState<TabType>('oczekujace');
+  const [searchParams] = useSearchParams();
   const [wizyty, setWizyty] = useState<Wizyta[]>([]);
   const [terminy, setTerminy] = useState<TerminLekarza[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Pobierz zakładkę z URL params, domyślnie 'oczekujace'
+  const getInitialTab = (): TabType => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'zaakceptowane' || tabParam === 'historia' || tabParam === 'terminy') {
+      return tabParam as TabType;
+    }
+    return 'oczekujace';
+  };
+  
+  const [activeTab, setActiveTab] = useState<TabType>(getInitialTab());
   
   // Stan dla dodawania terminów
   const [showAddTermin, setShowAddTermin] = useState(false);
@@ -27,6 +39,14 @@ const PanelLekarza: React.FC = () => {
       loadData();
     }
   }, [userDetails, activeTab]);
+
+  // Reaguj na zmiany w URL params
+  useEffect(() => {
+    const newTab = getInitialTab();
+    if (newTab !== activeTab) {
+      setActiveTab(newTab);
+    }
+  }, [searchParams]);
 
   const loadData = async () => {
     if (!userDetails?.lekarz?.idLekarza) return;

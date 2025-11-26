@@ -24,6 +24,7 @@ public class AnkietaController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<AnkietaDto>>> GetAnkiety()
     {
         try
@@ -163,6 +164,7 @@ public class AnkietaController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteAnkieta(string id)
     {
         try
@@ -335,13 +337,16 @@ public class AnkietaController : ControllerBase
             if (wizyta.Status != "Odbyta")
                 return BadRequest(new { message = "Można wypełnić ankietę tylko dla odbytych wizyt" });
 
-            // Sprawdź czy wizyta już była oceniona
+            // Sprawdź czy wizyta już była oceniona - dodatkowa walidacja z logowaniem
             var istniejacaOcena = await _mongoContext.Ankiety
                 .Find(a => a.IdWizyty == createDto.IdWizyty)
                 .FirstOrDefaultAsync();
 
             if (istniejacaOcena != null)
+            {
+                _logger.LogWarning("Próba ponownego wypełnienia ankiety dla wizyty {IdWizyty}", createDto.IdWizyty);
                 return BadRequest(new { message = "Ta wizyta została już oceniona" });
+            }
 
             if (createDto.OcenaWizyty < 1 || createDto.OcenaWizyty > 5)
                 return BadRequest(new { message = "Ocena musi być w skali 1-5" });
@@ -400,10 +405,11 @@ public class AnkietaController : ControllerBase
                 .Find(a => a.IdWizyty == wizytaId)
                 .FirstOrDefaultAsync();
 
+
             return Ok(new { 
                 wizytaId = wizytaId,
                 czyOceniona = ankieta != null,
-                ocena = ankieta?.OcenaWizyty
+                ocena = ankieta?.OcenaWizyty,
             });
         }
         catch (Exception ex)
@@ -412,4 +418,5 @@ public class AnkietaController : ControllerBase
             return StatusCode(500, new { message = "Błąd serwera" });
         }
     }
+
 }

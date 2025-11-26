@@ -95,6 +95,16 @@ class AnkietaService {
     const response = await axios.get(`${API_BASE_URL}/ankieta/czy-oceniona/${wizytaId}`);
     return response.data;
   }
+
+  // Usuń ankietę (tylko dla adminów)
+  async deleteAnkieta(id: string): Promise<void> {
+    await axios.delete(`${API_BASE_URL}/ankieta/${id}`);
+  }
+
+  // Alias dla getAnkiety() dla kompatybilności
+  async getAllAnkiety(): Promise<Ankieta[]> {
+    return this.getAnkiety();
+  }
 }
 
 export default new AnkietaService();

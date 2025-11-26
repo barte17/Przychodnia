@@ -1,39 +1,50 @@
 .panel-lekarza {
   padding: 20px;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .panel-lekarza h2 {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   color: #333;
+  font-size: 2rem;
 }
 
 .tabs {
   display: flex;
-  gap: 5px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #eee;
-  padding-bottom: 10px;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 30px;
+  border-bottom: 3px solid #e9ecef;
+  padding-bottom: 15px;
 }
 
 .tabs button {
-  padding: 10px 20px;
-  border: none;
-  background: #f0f0f0;
-  border-radius: 4px 4px 0 0;
+  padding: 12px 24px;
+  border: 2px solid #dee2e6;
+  background: white;
+  border-radius: 8px 8px 0 0;
   cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  color: #495057;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .tabs button:hover {
-  background: #e0e0e0;
+  background: #f8f9fa;
+  border-color: #007bff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .tabs button.active {
   background: #007bff;
   color: white;
+  border-color: #007bff;
+  box-shadow: 0 4px 8px rgba(0,123,255,0.3);
 }
 
 .alert {
@@ -58,6 +69,12 @@
 }
 
 /* Wizyty */
+.wizyty-section {
+  text-align: left;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .wizyty-list {
   display: flex;
   flex-direction: column;
@@ -169,6 +186,12 @@
 }
 
 /* Terminy */
+.terminy-section {
+  text-align: left;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
 .section-header {
   display: flex;
   justify-content: space-between;

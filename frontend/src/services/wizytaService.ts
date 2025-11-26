@@ -75,6 +75,21 @@ class WizytaService {
   async anulujWizyte(wizytaId: number): Promise<void> {
     await axios.patch(`${API_BASE_URL}/wizyta/${wizytaId}/cancel`);
   }
+
+  // Aktualizuj wizytę (admin)
+  async updateWizyta(wizytaId: number, updateData: { status?: string; data?: string; idLekarza?: number }): Promise<void> {
+    await axios.put(`${API_BASE_URL}/wizyta/${wizytaId}`, updateData);
+  }
+
+  // Usuń wizytę (admin)
+  async deleteWizyta(wizytaId: number): Promise<void> {
+    await axios.delete(`${API_BASE_URL}/wizyta/${wizytaId}`);
+  }
+
+  // Alias dla getWizyty() dla kompatybilności
+  async getAllWizyty(): Promise<Wizyta[]> {
+    return this.getWizyty();
+  }
 }
 
 export default new WizytaService();
