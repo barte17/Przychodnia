@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import wizytaService, { Wizyta } from '../services/wizytaService';
 import ankietaService, { OdpowiedzAnkiety } from '../services/ankietaService';
@@ -18,6 +19,7 @@ const PYTANIA_ANKIETY = [
 ];
 
 const MojeWizyty: React.FC = () => {
+  const navigate = useNavigate();
   const { userDetails } = useAuth();
   const [wizyty, setWizyty] = useState<WizytaWithAnkieta[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,7 +42,7 @@ const MojeWizyty: React.FC = () => {
     try {
       setLoading(true);
       const data = await wizytaService.getWizytyByPacjent(userDetails.pacjent.idPacjenta);
-      
+
       // Sprawdź które wizyty mają już ankietę
       const wizytaWithAnkieta = await Promise.all(
         data.map(async (wizyta) => {
@@ -51,7 +53,7 @@ const MojeWizyty: React.FC = () => {
           return { ...wizyta, maAnkiete: false };
         })
       );
-      
+
       setWizyty(wizytaWithAnkieta);
     } catch (err) {
       setError('Nie udało się pobrać wizyt');
@@ -63,7 +65,7 @@ const MojeWizyty: React.FC = () => {
 
   const handleAnuluj = async (wizytaId: number) => {
     if (!window.confirm('Czy na pewno chcesz anulować tę wizytę?')) return;
-    
+
     try {
       await wizytaService.anulujWizyte(wizytaId);
       loadWizyty();
@@ -80,14 +82,14 @@ const MojeWizyty: React.FC = () => {
 
   const handleSubmitAnkieta = async () => {
     if (!ankietaModal) return;
-    
+
     // Sprawdź czy wszystkie pytania mają odpowiedzi
     const nieodpowiedziane = PYTANIA_ANKIETY.filter((_, idx) => !odpowiedzi[idx]?.trim());
     if (nieodpowiedziane.length > 0) {
       alert('Proszę odpowiedzieć na wszystkie pytania');
       return;
     }
-    
+
     setSubmitting(true);
     try {
       const odpowiedziAnkiety: OdpowiedzAnkiety[] = PYTANIA_ANKIETY.map((pyt, idx) => ({
@@ -102,21 +104,21 @@ const MojeWizyty: React.FC = () => {
         odpowiedzi: odpowiedziAnkiety,
         dodatkoweUwagi: uwagi || undefined
       });
-      
+
       // Natychmiast aktualizuj stan lokalnie, żeby uniknąć wyświetlania przycisku
-      setWizyty(prevWizyty => 
-        prevWizyty.map(w => 
-          w.idWizyty === ankietaModal.idWizyty 
+      setWizyty(prevWizyty =>
+        prevWizyty.map(w =>
+          w.idWizyty === ankietaModal.idWizyty
             ? { ...w, maAnkiete: true }
             : w
         )
       );
-      
+
       setAnkietaModal(null);
       setOdpowiedzi({});
       setUwagi('');
       alert('Dziękujemy za wypełnienie ankiety!');
-      
+
       // Przeładuj dane w tle dla pewności
       loadWizyty();
     } catch (err: any) {
@@ -153,8 +155,11 @@ const MojeWizyty: React.FC = () => {
 
   return (
     <div className="moje-wizyty">
+      <button onClick={() => navigate('/dashboard')} className="btn-back">
+        ← Wróć do menu głównego
+      </button>
       <h2>Moje wizyty</h2>
-      
+
       {wizyty.length === 0 ? (
         <p className="no-data">Nie masz żadnych wizyt</p>
       ) : (
@@ -167,7 +172,7 @@ const MojeWizyty: React.FC = () => {
                 </span>
                 <span className="data">{formatDate(wizyta.data)}</span>
               </div>
-              
+
               <div className="wizyta-body">
                 <p className="lekarz">
                   <strong>Lekarz:</strong> {wizyta.lekarzImie} {wizyta.lekarzNazwisko}
@@ -176,26 +181,26 @@ const MojeWizyty: React.FC = () => {
                   <strong>Specjalizacja:</strong> {wizyta.lekarzSpecjalizacja}
                 </p>
               </div>
-              
+
               <div className="wizyta-actions">
                 {(wizyta.status === 'Oczekująca' || wizyta.status === 'Zaakceptowana') && (
-                  <button 
+                  <button
                     className="btn-anuluj"
                     onClick={() => handleAnuluj(wizyta.idWizyty)}
                   >
                     Anuluj wizytę
                   </button>
                 )}
-                
+
                 {wizyta.status === 'Odbyta' && !wizyta.maAnkiete && (
-                  <button 
+                  <button
                     className="btn-ankieta"
                     onClick={() => handleOpenAnkieta(wizyta)}
                   >
                     📋 Wypełnij ankietę
                   </button>
                 )}
-                
+
                 {wizyta.status === 'Odbyta' && wizyta.maAnkiete && (
                   <span className="ankieta-done">✓ Ankieta wypełniona</span>
                 )}
@@ -217,7 +222,7 @@ const MojeWizyty: React.FC = () => {
               <strong>Lekarz:</strong> {ankietaModal.lekarzImie} {ankietaModal.lekarzNazwisko}<br />
               <strong>Data wizyty:</strong> {formatDate(ankietaModal.data)}
             </p>
-            
+
             <div className="ankieta-pytania">
               {PYTANIA_ANKIETY.map((pyt, idx) => (
                 <div key={idx} className="form-group">
@@ -231,7 +236,7 @@ const MojeWizyty: React.FC = () => {
                 </div>
               ))}
             </div>
-            
+
             <div className="form-group">
               <label>Dodatkowe uwagi (opcjonalne):</label>
               <textarea
@@ -241,15 +246,15 @@ const MojeWizyty: React.FC = () => {
                 rows={3}
               />
             </div>
-            
+
             <div className="modal-actions">
-              <button 
+              <button
                 className="btn-cancel"
                 onClick={() => setAnkietaModal(null)}
               >
                 Anuluj
               </button>
-              <button 
+              <button
                 className="btn-submit"
                 onClick={handleSubmitAnkieta}
                 disabled={submitting}

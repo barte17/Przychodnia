@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { adminService, UserListItem, CreateUserByAdmin, UpdateUserRole } from '../services/adminService';
 import { useAuth } from '../contexts/AuthContext';
 
 const UserManagement: React.FC = () => {
   const { user, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const [users, setUsers] = useState<UserListItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,14 +38,14 @@ const UserManagement: React.FC = () => {
   const loadUsers = async () => {
     try {
       setLoading(true);
-      
+
       // Debug - sprawdź dane użytkownika
       console.log('Current user:', user);
       console.log('Is authenticated:', isAuthenticated);
       console.log('User role:', user?.role);
       console.log('Token from localStorage (token):', localStorage.getItem('token'));
       console.log('Token from localStorage (auth_token):', localStorage.getItem('auth_token'));
-      
+
       // Debug - sprawdź co widzi backend
       try {
         const debugResponse = await fetch('http://localhost:5178/api/admin/debug-auth', {
@@ -57,7 +59,7 @@ const UserManagement: React.FC = () => {
       } catch (debugError) {
         console.log('Debug auth error:', debugError);
       }
-      
+
       const usersData = await adminService.getAllUsers();
       setUsers(usersData);
       setError(null);
@@ -174,8 +176,11 @@ const UserManagement: React.FC = () => {
   return (
     <div className="user-management">
       <div className="user-management-header">
+        <button onClick={() => navigate('/dashboard')} className="btn-back">
+          ← Wróć do menu głównego
+        </button>
         <h2>Zarządzanie użytkownikami</h2>
-        <button 
+        <button
           onClick={() => setShowCreateForm(true)}
           className="btn-primary"
         >
@@ -203,7 +208,7 @@ const UserManagement: React.FC = () => {
                 <input
                   type="email"
                   value={createForm.email}
-                  onChange={(e) => setCreateForm({...createForm, email: e.target.value})}
+                  onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
                   required
                 />
               </div>
@@ -212,7 +217,7 @@ const UserManagement: React.FC = () => {
                 <input
                   type="password"
                   value={createForm.password}
-                  onChange={(e) => setCreateForm({...createForm, password: e.target.value})}
+                  onChange={(e) => setCreateForm({ ...createForm, password: e.target.value })}
                   required
                   minLength={6}
                   placeholder="Minimum 6 znaków"
@@ -224,7 +229,7 @@ const UserManagement: React.FC = () => {
                   <input
                     type="text"
                     value={createForm.firstName}
-                    onChange={(e) => setCreateForm({...createForm, firstName: e.target.value})}
+                    onChange={(e) => setCreateForm({ ...createForm, firstName: e.target.value })}
                     required
                   />
                 </div>
@@ -233,7 +238,7 @@ const UserManagement: React.FC = () => {
                   <input
                     type="text"
                     value={createForm.lastName}
-                    onChange={(e) => setCreateForm({...createForm, lastName: e.target.value})}
+                    onChange={(e) => setCreateForm({ ...createForm, lastName: e.target.value })}
                     required
                   />
                 </div>
@@ -242,7 +247,7 @@ const UserManagement: React.FC = () => {
                 <label>Rola:</label>
                 <select
                   value={createForm.role}
-                  onChange={(e) => setCreateForm({...createForm, role: e.target.value})}
+                  onChange={(e) => setCreateForm({ ...createForm, role: e.target.value })}
                 >
                   <option value="Patient">Pacjent</option>
                   <option value="Doctor">Lekarz</option>
@@ -255,7 +260,7 @@ const UserManagement: React.FC = () => {
                   <input
                     type="text"
                     value={createForm.pesel}
-                    onChange={(e) => setCreateForm({...createForm, pesel: e.target.value})}
+                    onChange={(e) => setCreateForm({ ...createForm, pesel: e.target.value })}
                     maxLength={11}
                     required
                   />
@@ -267,7 +272,7 @@ const UserManagement: React.FC = () => {
                   <input
                     type="text"
                     value={createForm.specjalizacja}
-                    onChange={(e) => setCreateForm({...createForm, specjalizacja: e.target.value})}
+                    onChange={(e) => setCreateForm({ ...createForm, specjalizacja: e.target.value })}
                     required
                   />
                 </div>
@@ -297,7 +302,7 @@ const UserManagement: React.FC = () => {
                 <label>Nowa rola:</label>
                 <select
                   value={roleChangeForm.newRole}
-                  onChange={(e) => setRoleChangeForm({...roleChangeForm, newRole: e.target.value})}
+                  onChange={(e) => setRoleChangeForm({ ...roleChangeForm, newRole: e.target.value })}
                 >
                   <option value="Patient">Pacjent</option>
                   <option value="Doctor">Lekarz</option>
@@ -310,7 +315,7 @@ const UserManagement: React.FC = () => {
                   <input
                     type="text"
                     value={roleChangeForm.pesel}
-                    onChange={(e) => setRoleChangeForm({...roleChangeForm, pesel: e.target.value})}
+                    onChange={(e) => setRoleChangeForm({ ...roleChangeForm, pesel: e.target.value })}
                     maxLength={11}
                     required
                   />
@@ -322,7 +327,7 @@ const UserManagement: React.FC = () => {
                   <input
                     type="text"
                     value={roleChangeForm.specjalizacja}
-                    onChange={(e) => setRoleChangeForm({...roleChangeForm, specjalizacja: e.target.value})}
+                    onChange={(e) => setRoleChangeForm({ ...roleChangeForm, specjalizacja: e.target.value })}
                     required
                   />
                 </div>
@@ -386,7 +391,7 @@ const UserManagement: React.FC = () => {
             ))}
           </tbody>
         </table>
-        
+
         {users.length === 0 && (
           <div className="no-users">
             Brak użytkowników w systemie

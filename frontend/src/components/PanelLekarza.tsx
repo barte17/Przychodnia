@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useLocation, useSearchParams } from 'react-router-dom';
 import wizytaService, { Wizyta } from '../services/wizytaService';
@@ -8,13 +9,14 @@ import './PanelLekarza.css';
 type TabType = 'oczekujace' | 'zaakceptowane' | 'historia' | 'terminy';
 
 const PanelLekarza: React.FC = () => {
+  const navigate = useNavigate();
   const { userDetails } = useAuth();
   const [searchParams] = useSearchParams();
   const [wizyty, setWizyty] = useState<Wizyta[]>([]);
   const [terminy, setTerminy] = useState<TerminLekarza[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   // Pobierz zakładkę z URL params, domyślnie 'oczekujace'
   const getInitialTab = (): TabType => {
     const tabParam = searchParams.get('tab');
@@ -23,9 +25,9 @@ const PanelLekarza: React.FC = () => {
     }
     return 'oczekujace';
   };
-  
+
   const [activeTab, setActiveTab] = useState<TabType>(getInitialTab());
-  
+
   // Stan dla dodawania terminów
   const [showAddTermin, setShowAddTermin] = useState(false);
   const [nowyTerminData, setNowyTerminData] = useState('');
@@ -50,10 +52,10 @@ const PanelLekarza: React.FC = () => {
 
   const loadData = async () => {
     if (!userDetails?.lekarz?.idLekarza) return;
-    
+
     setLoading(true);
     setError(null);
-    
+
     try {
       if (activeTab === 'terminy') {
         const data = await terminService.getTerminyByLekarz(userDetails.lekarz.idLekarza, false);
@@ -80,7 +82,7 @@ const PanelLekarza: React.FC = () => {
 
   const handleOdrzuc = async (wizytaId: number) => {
     if (!window.confirm('Czy na pewno chcesz odrzucić tę wizytę?')) return;
-    
+
     try {
       await wizytaService.odrzucWizyte(wizytaId);
       loadData();
@@ -100,19 +102,19 @@ const PanelLekarza: React.FC = () => {
 
   const handleDodajTerminy = async () => {
     if (!userDetails?.lekarz?.idLekarza || !nowyTerminData) return;
-    
+
     setSubmitting(true);
     try {
       const dataOd = new Date(`${nowyTerminData}T${nowyTerminGodzinaOd}`);
       const dataDo = new Date(`${nowyTerminData}T${nowyTerminGodzinaDo}`);
-      
+
       await terminService.createTerminyBatch({
         idLekarza: userDetails.lekarz.idLekarza,
         dataOd: dataOd.toISOString(),
         dataDo: dataDo.toISOString(),
         czasTrwaniaMinuty: czasTrwania
       });
-      
+
       setShowAddTermin(false);
       setNowyTerminData('');
       loadData();
@@ -126,7 +128,7 @@ const PanelLekarza: React.FC = () => {
 
   const handleUsunTermin = async (terminId: number) => {
     if (!window.confirm('Czy na pewno chcesz usunąć ten termin?')) return;
-    
+
     try {
       await terminService.deleteTermin(terminId);
       loadData();
@@ -175,28 +177,31 @@ const PanelLekarza: React.FC = () => {
 
   return (
     <div className="panel-lekarza">
+      <button onClick={() => navigate('/dashboard')} className="btn-back">
+        ← Wróć do menu głównego
+      </button>
       <h2>Panel lekarza</h2>
-      
+
       <div className="tabs">
-        <button 
+        <button
           className={activeTab === 'oczekujace' ? 'active' : ''}
           onClick={() => setActiveTab('oczekujace')}
         >
           Oczekujące ({wizyty.filter(w => w.status === 'Oczekująca').length})
         </button>
-        <button 
+        <button
           className={activeTab === 'zaakceptowane' ? 'active' : ''}
           onClick={() => setActiveTab('zaakceptowane')}
         >
           Zaakceptowane
         </button>
-        <button 
+        <button
           className={activeTab === 'historia' ? 'active' : ''}
           onClick={() => setActiveTab('historia')}
         >
           Historia
         </button>
-        <button 
+        <button
           className={activeTab === 'terminy' ? 'active' : ''}
           onClick={() => setActiveTab('terminy')}
         >
@@ -212,14 +217,14 @@ const PanelLekarza: React.FC = () => {
         <div className="terminy-section">
           <div className="section-header">
             <h3>Twoje dostępne terminy</h3>
-            <button 
+            <button
               className="btn-primary"
               onClick={() => setShowAddTermin(true)}
             >
               + Dodaj terminy
             </button>
           </div>
-          
+
           {terminy.length === 0 ? (
             <p className="no-data">Nie masz żadnych terminów</p>
           ) : (
@@ -233,7 +238,7 @@ const PanelLekarza: React.FC = () => {
                     </span>
                   </div>
                   {termin.czyDostepny && (
-                    <button 
+                    <button
                       className="btn-delete"
                       onClick={() => handleUsunTermin(termin.idTerminu)}
                     >
@@ -259,21 +264,21 @@ const PanelLekarza: React.FC = () => {
                     </span>
                     <span className="data">{formatDate(wizyta.data)}</span>
                   </div>
-                  
+
                   <div className="wizyta-body">
                     <p><strong>Pacjent:</strong> {wizyta.pacjentImie} {wizyta.pacjentNazwisko}</p>
                   </div>
-                  
+
                   <div className="wizyta-actions">
                     {wizyta.status === 'Oczekująca' && (
                       <>
-                        <button 
+                        <button
                           className="btn-akceptuj"
                           onClick={() => handleAkceptuj(wizyta.idWizyty)}
                         >
                           ✓ Akceptuj
                         </button>
-                        <button 
+                        <button
                           className="btn-odrzuc"
                           onClick={() => handleOdrzuc(wizyta.idWizyty)}
                         >
@@ -281,9 +286,9 @@ const PanelLekarza: React.FC = () => {
                         </button>
                       </>
                     )}
-                    
+
                     {wizyta.status === 'Zaakceptowana' && (
-                      <button 
+                      <button
                         className="btn-zakoncz"
                         onClick={() => handleZakoncz(wizyta.idWizyty)}
                       >
@@ -303,7 +308,7 @@ const PanelLekarza: React.FC = () => {
         <div className="modal-overlay" onClick={() => setShowAddTermin(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <h3>Dodaj terminy</h3>
-            
+
             <div className="form-group">
               <label>Data:</label>
               <input
@@ -313,7 +318,7 @@ const PanelLekarza: React.FC = () => {
                 min={new Date().toISOString().split('T')[0]}
               />
             </div>
-            
+
             <div className="form-row">
               <div className="form-group">
                 <label>Godzina od:</label>
@@ -323,7 +328,7 @@ const PanelLekarza: React.FC = () => {
                   onChange={(e) => setNowyTerminGodzinaOd(e.target.value)}
                 />
               </div>
-              
+
               <div className="form-group">
                 <label>Godzina do:</label>
                 <input
@@ -333,7 +338,7 @@ const PanelLekarza: React.FC = () => {
                 />
               </div>
             </div>
-            
+
             <div className="form-group">
               <label>Czas trwania wizyty (minuty):</label>
               <select
@@ -346,15 +351,15 @@ const PanelLekarza: React.FC = () => {
                 <option value={60}>60 minut</option>
               </select>
             </div>
-            
+
             <div className="modal-actions">
-              <button 
+              <button
                 className="btn-cancel"
                 onClick={() => setShowAddTermin(false)}
               >
                 Anuluj
               </button>
-              <button 
+              <button
                 className="btn-submit"
                 onClick={handleDodajTerminy}
                 disabled={!nowyTerminData || submitting}

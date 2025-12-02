@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import wizytaService from '../services/wizytaService';
 import './ZarzadzanieWizytami.css';
 
@@ -16,6 +17,7 @@ interface Wizyta {
 }
 
 const ZarzadzanieWizytami: React.FC = () => {
+  const navigate = useNavigate();
   const [wizyty, setWizyty] = useState<Wizyta[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +61,7 @@ const ZarzadzanieWizytami: React.FC = () => {
 
   const deleteWizyta = async (idWizyty: number) => {
     if (!window.confirm('Czy na pewno chcesz usunąć tę wizytę?')) return;
-    
+
     try {
       await wizytaService.deleteWizyta(idWizyty);
       await loadWizyty();
@@ -72,28 +74,28 @@ const ZarzadzanieWizytami: React.FC = () => {
   // Filtrowanie wizyt
   const filteredWizyty = wizyty.filter(wizyta => {
     if (filterStatus && wizyta.status !== filterStatus) return false;
-    
-    if (filterLekarz && 
-        !`${wizyta.lekarzImie} ${wizyta.lekarzNazwisko}`.toLowerCase().includes(filterLekarz.toLowerCase()) &&
-        !wizyta.lekarzSpecjalizacja.toLowerCase().includes(filterLekarz.toLowerCase())) {
+
+    if (filterLekarz &&
+      !`${wizyta.lekarzImie} ${wizyta.lekarzNazwisko}`.toLowerCase().includes(filterLekarz.toLowerCase()) &&
+      !wizyta.lekarzSpecjalizacja.toLowerCase().includes(filterLekarz.toLowerCase())) {
       return false;
     }
-    
-    if (filterPacjent && 
-        !`${wizyta.pacjentImie} ${wizyta.pacjentNazwisko}`.toLowerCase().includes(filterPacjent.toLowerCase())) {
+
+    if (filterPacjent &&
+      !`${wizyta.pacjentImie} ${wizyta.pacjentNazwisko}`.toLowerCase().includes(filterPacjent.toLowerCase())) {
       return false;
     }
-    
+
     if (filterDataOd && new Date(wizyta.data) < new Date(filterDataOd)) return false;
     if (filterDataDo && new Date(wizyta.data) > new Date(filterDataDo + 'T23:59:59')) return false;
-    
+
     return true;
   });
 
   // Sortowanie wizyt
   const sortedWizyty = [...filteredWizyty].sort((a, b) => {
     let comparison = 0;
-    
+
     switch (sortBy) {
       case 'data':
         comparison = new Date(a.data).getTime() - new Date(b.data).getTime();
@@ -108,7 +110,7 @@ const ZarzadzanieWizytami: React.FC = () => {
         comparison = `${a.pacjentImie} ${a.pacjentNazwisko}`.localeCompare(`${b.pacjentImie} ${b.pacjentNazwisko}`);
         break;
     }
-    
+
     return sortOrder === 'asc' ? comparison : -comparison;
   });
 
@@ -161,8 +163,11 @@ const ZarzadzanieWizytami: React.FC = () => {
 
   return (
     <div className="zarzadzanie-wizytami">
+      <button onClick={() => navigate('/dashboard')} className="btn-back">
+        ← Wróć do menu głównego
+      </button>
       <h1>Zarządzanie Wizytami</h1>
-      
+
       {/* Statystyki */}
       <div className="stats-grid">
         <div className="stat-card total">
@@ -198,36 +203,36 @@ const ZarzadzanieWizytami: React.FC = () => {
             <option value="Odrzucona">Odrzucona</option>
             <option value="Anulowana">Anulowana</option>
           </select>
-          
+
           <input
             type="text"
             placeholder="Filtruj po lekarzu lub specjalizacji"
             value={filterLekarz}
             onChange={(e) => setFilterLekarz(e.target.value)}
           />
-          
+
           <input
             type="text"
             placeholder="Filtruj po pacjencie"
             value={filterPacjent}
             onChange={(e) => setFilterPacjent(e.target.value)}
           />
-          
+
           <input
             type="date"
             placeholder="Data od"
             value={filterDataOd}
             onChange={(e) => setFilterDataOd(e.target.value)}
           />
-          
+
           <input
             type="date"
             placeholder="Data do"
             value={filterDataDo}
             onChange={(e) => setFilterDataDo(e.target.value)}
           />
-          
-          <button 
+
+          <button
             onClick={() => {
               setFilterStatus('');
               setFilterLekarz('');
@@ -248,25 +253,25 @@ const ZarzadzanieWizytami: React.FC = () => {
           <thead>
             <tr>
               <th>ID</th>
-              <th 
+              <th
                 onClick={() => handleSort('data')}
                 className={`sortable ${sortBy === 'data' ? `sorted-${sortOrder}` : ''}`}
               >
                 Data i godzina {sortBy === 'data' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
-              <th 
+              <th
                 onClick={() => handleSort('status')}
                 className={`sortable ${sortBy === 'status' ? `sorted-${sortOrder}` : ''}`}
               >
                 Status {sortBy === 'status' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
-              <th 
+              <th
                 onClick={() => handleSort('pacjent')}
                 className={`sortable ${sortBy === 'pacjent' ? `sorted-${sortOrder}` : ''}`}
               >
                 Pacjent {sortBy === 'pacjent' && (sortOrder === 'asc' ? '↑' : '↓')}
               </th>
-              <th 
+              <th
                 onClick={() => handleSort('lekarz')}
                 className={`sortable ${sortBy === 'lekarz' ? `sorted-${sortOrder}` : ''}`}
               >
@@ -281,7 +286,7 @@ const ZarzadzanieWizytami: React.FC = () => {
                 <td>{wizyta.idWizyty}</td>
                 <td>{new Date(wizyta.data).toLocaleString('pl-PL')}</td>
                 <td>
-                  <span 
+                  <span
                     className="status-badge"
                     style={{ backgroundColor: getStatusColor(wizyta.status) }}
                   >
@@ -310,7 +315,7 @@ const ZarzadzanieWizytami: React.FC = () => {
                     <option value="Odrzucona">Odrzucona</option>
                     <option value="Anulowana">Anulowana</option>
                   </select>
-                  <button 
+                  <button
                     onClick={() => deleteWizyta(wizyta.idWizyty)}
                     className="delete-btn"
                   >

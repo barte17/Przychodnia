@@ -1,30 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import ankietaService from '../services/ankietaService';
+import { useNavigate } from 'react-router-dom';
+import ankietaService, { Ankieta } from '../services/ankietaService';
 import './ZarzadzanieAnkietami.css';
 
-interface Ankieta {
-  id: string;
-  idAnkiety: number;
-  idWizyty: number;
-  idPacjenta?: number;
-  idLekarza: number;
-  nazwaLekarza: string;
-  pesel?: string;
-  czyAnonimowa: boolean;
-  dataWypelnienia: string;
-  dataWizyty: string;
-  typAnkiety: string;
-  ocenaWizyty: number;
-  odpowiedzi: Array<{
-    pytanie: string;
-    odpowiedz: string;
-    kategoria: string;
-  }>;
-  dodatkoweUwagi?: string;
-  dataUtworzenia: string;
-}
-
 const ZarzadzanieAnkietami: React.FC = () => {
+  const navigate = useNavigate();
   const [ankiety, setAnkiety] = useState<Ankieta[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +35,7 @@ const ZarzadzanieAnkietami: React.FC = () => {
 
   const deleteAnkieta = async (id: string) => {
     if (!window.confirm('Czy na pewno chcesz usunąć tę ankietę?')) return;
-    
+
     try {
       await ankietaService.deleteAnkieta(id);
       await loadAnkiety();
@@ -80,19 +60,19 @@ const ZarzadzanieAnkietami: React.FC = () => {
     if (filterLekarz && (!ankieta.nazwaLekarza || !ankieta.nazwaLekarza.toLowerCase().includes(filterLekarz.toLowerCase()))) {
       return false;
     }
-    
+
     if (filterOcena && (!ankieta.ocenaWizyty || ankieta.ocenaWizyty.toString() !== filterOcena)) {
       return false;
     }
-    
+
     if (filterDataOd && new Date(ankieta.dataWypelnienia) < new Date(filterDataOd)) {
       return false;
     }
-    
+
     if (filterDataDo && new Date(ankieta.dataWypelnienia) > new Date(filterDataDo + 'T23:59:59')) {
       return false;
     }
-    
+
     return true;
   });
 
@@ -101,9 +81,9 @@ const ZarzadzanieAnkietami: React.FC = () => {
   const stats = {
     total: ankiety.length,
     anonimowe: ankiety.filter(a => a.czyAnonimowa).length,
-    sredniaOcena: ankietyZOcenami.length > 0 ? (ankietyZOcenami.reduce((sum, a) => sum + a.ocenaWizyty, 0) / ankietyZOcenami.length).toFixed(1) : '0',
-    najlepszaOcena: ankietyZOcenami.length > 0 ? Math.max(...ankietyZOcenami.map(a => a.ocenaWizyty)) : 0,
-    najgorszaOcena: ankietyZOcenami.length > 0 ? Math.min(...ankietyZOcenami.map(a => a.ocenaWizyty)) : 0
+    sredniaOcena: ankietyZOcenami.length > 0 ? (ankietyZOcenami.reduce((sum, a) => sum + (a.ocenaWizyty ?? 0), 0) / ankietyZOcenami.length).toFixed(1) : '0',
+    najlepszaOcena: ankietyZOcenami.length > 0 ? Math.max(...ankietyZOcenami.map(a => a.ocenaWizyty ?? 0)) : 0,
+    najgorszaOcena: ankietyZOcenami.length > 0 ? Math.min(...ankietyZOcenami.map(a => a.ocenaWizyty ?? 0)) : 0
   };
 
   if (loading) return <div className="loading">Ładowanie ankiet...</div>;
@@ -111,8 +91,11 @@ const ZarzadzanieAnkietami: React.FC = () => {
 
   return (
     <div className="zarzadzanie-ankietami">
+      <button onClick={() => navigate('/dashboard')} className="btn-back">
+        ← Wróć do menu głównego
+      </button>
       <h1>Zarządzanie Ankietami</h1>
-      
+
       {/* Statystyki */}
       <div className="stats-grid">
         <div className="stat-card">
@@ -165,7 +148,7 @@ const ZarzadzanieAnkietami: React.FC = () => {
             value={filterDataDo}
             onChange={(e) => setFilterDataDo(e.target.value)}
           />
-          <button 
+          <button
             onClick={() => {
               setFilterLekarz('');
               setFilterOcena('');
@@ -195,7 +178,7 @@ const ZarzadzanieAnkietami: React.FC = () => {
           </thead>
           <tbody>
             {filteredAnkiety.map((ankieta) => (
-              <tr key={ankieta.id}>
+              <tr key={ankieta.id || ankieta.idAnkiety}>
                 <td>{ankieta.idAnkiety}</td>
                 <td>{ankieta.nazwaLekarza || 'Nieznany lekarz'}</td>
                 <td>
@@ -215,15 +198,16 @@ const ZarzadzanieAnkietami: React.FC = () => {
                   </span>
                 </td>
                 <td className="actions">
-                  <button 
+                  <button
                     onClick={() => openAnkietaModal(ankieta)}
                     className="view-btn"
                   >
                     👁️ Zobacz
                   </button>
-                  <button 
-                    onClick={() => deleteAnkieta(ankieta.id)}
+                  <button
+                    onClick={() => ankieta.id && deleteAnkieta(ankieta.id)}
                     className="delete-btn"
+                    disabled={!ankieta.id}
                   >
                     🗑️ Usuń
                   </button>
@@ -248,15 +232,15 @@ const ZarzadzanieAnkietami: React.FC = () => {
               <h2>Szczegóły ankiety #{selectedAnkieta.idAnkiety}</h2>
               <button onClick={closeModal} className="close-btn">✕</button>
             </div>
-            
+
             <div className="modal-body">
               <div className="ankieta-details">
                 <div className="detail-section">
                   <h3>Informacje podstawowe</h3>
                   <p><strong>Lekarz:</strong> {selectedAnkieta.nazwaLekarza || 'Nieznany lekarz'}</p>
-                  <p><strong>Data wizyty:</strong> {new Date(selectedAnkieta.dataWizyty).toLocaleString('pl-PL')}</p>
+                  <p><strong>Data wizyty:</strong> {selectedAnkieta.dataWizyty ? new Date(selectedAnkieta.dataWizyty).toLocaleString('pl-PL') : '-'}</p>
                   <p><strong>Data wypełnienia:</strong> {new Date(selectedAnkieta.dataWypelnienia).toLocaleString('pl-PL')}</p>
-                  <p><strong>Ocena:</strong> 
+                  <p><strong>Ocena:</strong>
                     {selectedAnkieta.ocenaWizyty ? (
                       <span className={`ocena ocena-${selectedAnkieta.ocenaWizyty}`}>
                         {selectedAnkieta.ocenaWizyty} ⭐

@@ -33,7 +33,7 @@ const ListaLekarzy: React.FC = () => {
     <div className="lista-lekarzy">
       <div className="header">
         <button className="btn-back" onClick={() => navigate('/dashboard')}>
-          ← Powrót
+          ← Wróć do menu głównego
         </button>
         <h2>Nasi lekarze</h2>
       </div>

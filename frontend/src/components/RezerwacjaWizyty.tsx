@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import terminService, { TerminLekarza } from '../services/terminService';
 import wizytaService from '../services/wizytaService';
@@ -6,6 +7,7 @@ import lekarzService, { Lekarz } from '../services/lekarzService';
 import './RezerwacjaWizyty.css';
 
 const RezerwacjaWizyty: React.FC = () => {
+  const navigate = useNavigate();
   const { userDetails } = useAuth();
   const [lekarze, setLekarze] = useState<Lekarz[]>([]);
   const [selectedLekarz, setSelectedLekarz] = useState<number | null>(null);
@@ -64,7 +66,7 @@ const RezerwacjaWizyty: React.FC = () => {
         idTerminu: terminId,
         idPacjenta: userDetails.pacjent.idPacjenta
       });
-      
+
       setSuccess('Wizyta została zarezerwowana! Oczekuj na akceptację lekarza.');
       if (selectedLekarz) {
         loadTerminy(selectedLekarz);
@@ -108,6 +110,9 @@ const RezerwacjaWizyty: React.FC = () => {
 
   return (
     <div className="rezerwacja-wizyty">
+      <button onClick={() => navigate('/dashboard')} className="btn-back">
+        ← Wróć do menu głównego
+      </button>
       <h2>Zarezerwuj wizytę</h2>
 
       {error && <div className="alert alert-error">{error}</div>}
@@ -136,7 +141,7 @@ const RezerwacjaWizyty: React.FC = () => {
       {selectedLekarz && (
         <div className="terminy-section">
           <h3>Dostępne terminy</h3>
-          
+
           {loadingTerminy ? (
             <div className="loading">Ładowanie terminów...</div>
           ) : terminy.length === 0 ? (

@@ -115,18 +115,15 @@ public class AdminController : ControllerBase
     [HttpPost("users")]
     public async Task<ActionResult<UserInfoDto>> CreateUser(CreateUserByAdminDto createUserDto)
     {
-        // Check if user already exists
         if (await _userManager.FindByEmailAsync(createUserDto.Email) != null)
             return BadRequest(new { message = "Użytkownik o podanym adresie email już istnieje" });
 
-        // Validate role-specific requirements
         if (createUserDto.Role == "Patient" && string.IsNullOrEmpty(createUserDto.PESEL))
             return BadRequest(new { message = "PESEL jest wymagany dla pacjentów" });
 
         if (createUserDto.Role == "Doctor" && string.IsNullOrEmpty(createUserDto.Specjalizacja))
             return BadRequest(new { message = "Specjalizacja jest wymagana dla lekarzy" });
 
-        // Check if PESEL is already used (for patients)
         if (createUserDto.Role == "Patient" && !string.IsNullOrEmpty(createUserDto.PESEL))
         {
             if (await _context.Pacjenci.AnyAsync(p => p.PESEL == createUserDto.PESEL))
@@ -137,7 +134,7 @@ public class AdminController : ControllerBase
         {
             UserName = createUserDto.Email,
             Email = createUserDto.Email,
-            EmailConfirmed = true, // Admin tworzy konto - automatycznie potwierdzone
+            EmailConfirmed = true,
             FirstName = createUserDto.FirstName,
             LastName = createUserDto.LastName,
             Role = createUserDto.Role,
@@ -145,19 +142,13 @@ public class AdminController : ControllerBase
             UpdatedAt = DateTime.UtcNow
         };
 
-        // Create user with provided password
-        Console.WriteLine($"Creating user: {createUserDto.Email} with role: {createUserDto.Role}");
         var result = await _userManager.CreateAsync(user, createUserDto.Password);
 
         if (!result.Succeeded)
         {
-            Console.WriteLine($"User creation failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
             return BadRequest(new { message = "Błąd podczas tworzenia konta", errors = result.Errors });
         }
-        
-        Console.WriteLine($"User created successfully: {user.Email}, ID: {user.Id}, EmailConfirmed: {user.EmailConfirmed}");
 
-        // Create corresponding Pacjent or Lekarz record
         if (createUserDto.Role == "Patient" && !string.IsNullOrEmpty(createUserDto.PESEL))
         {
             var pacjent = new Pacjent
@@ -200,14 +191,12 @@ public class AdminController : ControllerBase
         var oldRole = user.Role;
         var newRole = updateRoleDto.NewRole;
 
-        // Validate role-specific requirements
         if (newRole == "Patient" && string.IsNullOrEmpty(updateRoleDto.PESEL))
             return BadRequest(new { message = "PESEL jest wymagany dla roli pacjent" });
 
         if (newRole == "Doctor" && string.IsNullOrEmpty(updateRoleDto.Specjalizacja))
             return BadRequest(new { message = "Specjalizacja jest wymagana dla roli lekarz" });
 
-        // Check if PESEL is already used (when changing to patient)
         if (newRole == "Patient" && !string.IsNullOrEmpty(updateRoleDto.PESEL))
         {
             var existingPacjent = await _context.Pacjenci
@@ -220,7 +209,6 @@ public class AdminController : ControllerBase
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            // Remove old role-specific data
             if (oldRole == "Patient" && user.Pacjent != null)
             {
                 _context.Pacjenci.Remove(user.Pacjent);
@@ -230,11 +218,9 @@ public class AdminController : ControllerBase
                 _context.Lekarze.Remove(user.Lekarz);
             }
 
-            // Update user role
             user.Role = newRole;
             user.UpdatedAt = DateTime.UtcNow;
 
-            // Add new role-specific data
             if (newRole == "Patient" && !string.IsNullOrEmpty(updateRoleDto.PESEL))
             {
                 var pacjent = new Pacjent
@@ -284,7 +270,6 @@ public class AdminController : ControllerBase
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            // Update user basic info
             if (!string.IsNullOrEmpty(updateUserDto.Email) && updateUserDto.Email != user.Email)
             {
                 if (await _userManager.FindByEmailAsync(updateUserDto.Email) != null)
@@ -302,7 +287,6 @@ public class AdminController : ControllerBase
 
             user.UpdatedAt = DateTime.UtcNow;
 
-            // Update role-specific data
             if (user.Pacjent != null)
             {
                 if (!string.IsNullOrEmpty(updateUserDto.FirstName))
@@ -365,14 +349,12 @@ public class AdminController : ControllerBase
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
-            // Remove role-specific data first
             if (user.Pacjent != null)
                 _context.Pacjenci.Remove(user.Pacjent);
             
             if (user.Lekarz != null)
                 _context.Lekarze.Remove(user.Lekarz);
 
-            // Remove the user
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
             {
